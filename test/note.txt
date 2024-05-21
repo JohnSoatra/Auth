@@ -1,0 +1,27 @@
+const work = async () => {
+            const response = await fetch(api('login'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: 'soatra@mail.com',
+                    password: 'abc'
+                })
+            });
+        }
+
+        work();
+--------------
+const response = await fetch(api('logout'), {
+                method: 'GET',
+                // headers: {
+                //     'Content-Type': 'application/json'
+                // },
+                // body: JSON.stringify({
+                //     email: 'soatra@mail.com',
+                //     password: 'abc'
+                // })
+            });
+
+            console.log(response);
