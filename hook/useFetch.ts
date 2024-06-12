@@ -1,10 +1,13 @@
+import Labels from "@/constant/labels";
+import cookie from "@/util/cookie";
 import { useEffect, useState } from "react";
 
 type Props = {
     endpoint: string,
     init?: RequestInit,
     refreshEndpoint?: string,
-    refreshInit?: RequestInit
+    refreshInit?: RequestInit,
+    unauthorizedStatusCode?: number
 }
 
 function useFetch<T=string>({
@@ -12,6 +15,7 @@ function useFetch<T=string>({
     init,
     refreshEndpoint,
     refreshInit,
+    unauthorizedStatusCode
 }: Props):T | undefined {
     const [data, setData] = useState(undefined as T | undefined);
 
@@ -22,30 +26,38 @@ function useFetch<T=string>({
             try {
                 let response = await fetch(endpoint, {
                     signal: controller.signal,
-                    ...init
+                    ...init,
+                    headers: {
+                        ...init?.headers,
+                        'Authorization': 'Bearer ' + cookie.get(Labels.AccessToken, '')
+                    }
                 });
     
                 if (
-                    response.status === 498 &&
+                    response.status === (unauthorizedStatusCode || 401) &&
                     refreshEndpoint !== undefined &&
                     endpoint !== refreshEndpoint
                 ) {
+                    // console.log('un auterize');
                     response = await fetch(refreshEndpoint, {
                         signal: controller.signal,
-                        ...refreshInit
+                        ...refreshInit,
+                        headers: {
+                            ...refreshInit?.headers,
+                            'Authorization': 'Bearer ' + cookie.get(Labels.RefreshToken, '')
+                        }
                     });
                     
-                    if (response.status === 200) {
-                        response = await fetch(endpoint, {
-                            signal: controller.signal,
-                            credentials: 'include',
-                            ...init,
-                        });
+                    // if (response.status === 200) {
+                    //     response = await fetch(endpoint, {
+                    //         signal: controller.signal,
+                    //         ...init,
+                    //     });
     
-                        const data = await response.json();
+                    //     const data = await response.json();
     
-                        setData(data);
-                    }
+                    //     setData(data);
+                    // }
                 } else {
                     let data = await response.json();
     

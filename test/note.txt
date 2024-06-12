@@ -25,3 +25,413 @@ const response = await fetch(api('logout'), {
             });
 
             console.log(response);
+----------
+// const { productId, accessToken } = req.; 
+
+    // console.log('headers = ', req.headers.get('authorization'));
+
+    // if (productId !== undefined && email !== undefined && accessToken !== undefined) {
+    //     try {
+    //         const content: JwtContent =  jwt.verify(
+    //             accessToken,
+    //             process.env.Access_Token
+    //         );
+
+    //         if (content.email === email) {
+    //             return NextResponse.json({
+    //                 id: productId,
+    //                 name: 'Smart Tv',
+    //                 price: 500
+    //             });
+    //         }
+    //     } catch{
+    //         return NextResponse.json(null, { status: 401 });
+    //     }
+    // }
+--------
+init: {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                productId: '1',
+                email: 'soatra@mail.com',
+                accessToken: cookie.get('accessToken')
+            })
+        }
+----------
+httpOnly: token.name === 'refreshToken'
+--------
+'use client';
+import React, { useEffect } from "react";
+import api from "@/util/api";
+import { Cookies, useCookies } from "next-client-cookies";
+import useFetch from "@/hook/useFetch";
+import { ResponseProduct } from "@/typings";
+import send from "@/util/send";
+
+const Buttons: {
+    text: string,
+    onClick: (evt: React.MouseEvent, cookie: Cookies) => void,
+}[] = [
+    {
+        text: 'Login',
+        onClick: () => {
+            const work = async () => {
+                const response = await fetch(api('login'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        email: 'soatra@mail.com',
+                        password: 'abc'
+                    })
+                });
+
+                const data = await response.json();
+
+                console.log(data);
+            }
+    
+            work();
+        }
+    },
+    // {
+    //     text: 'Get Product',
+    //     onClick: (_, cookie) => {
+    //         const work = async () => {
+    //             const accessToken = cookie.get('accessToken');
+
+    //             const response = await fetch(api('product'), {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'applicatoin/json',//
+    //                     'Authorization': 'Basic ' + (accessToken || '')
+    //                 }
+    //             });
+    //             const data = await response.json();
+
+    //             console.log(data);
+    //         }
+
+    //         work();
+    //     }
+    // }
+]
+
+const Home = () => {
+    // const data = useFetch<ResponseProduct>({
+    //     endpoint: api('product?id=12'),
+    //     refreshEndpoint: api('refresh'),
+    // });
+    useEffect(() => {
+        const work = async () => {
+            const result = await send({
+                url: api('product?id=12'),
+                urlRefresh: api('refresh')
+            });
+            console.log(result);
+        }
+        work();
+    }, []);
+
+    return (
+        // null
+        <div className="p-10 flex flex-col items-center gap-y-[20px]">
+            {
+                Buttons.map((btn, index) =>
+                    <button
+                        key={index}
+                        className="border p-2"
+                        onClick={(evt) => btn.onClick()}>
+                        {btn.text}
+                    </button>
+                )
+            }
+            <div className="pt-10">
+                {/* data = {data ? JSON.stringify(data) : 'fetching...'} */}
+            </div>
+        </div>
+    );
+}
+
+export default Home;
+-----------
+let _authorization = authorization || 'Bearer ' + cookie.get(Labels.AccessToken, '');
+        const _authorizationRefresh = refreshAuthorization || 'Bearer ' + cookie.get(Labels.RefreshToken, '');
+------------
+const setToken = (token: string) => {
+        Cookies.set('token', token);
+
+        setAuth({
+            ...auth,
+            token
+        });
+    }
+
+    const setRefreshToken = (refreshToken: string) => {
+        setAuth({
+            ...auth,
+            refreshToken
+        });
+    }
+
+    const setUser = (user: Partial<AuthType['user']>) => {
+        setAuth({
+
+        });
+    }
+---------
+'use client'
+import { Context, createContext, useContext, useEffect, useState } from "react";
+import Cookies from 'js-cookie';
+
+type AuthType = {
+    user?: {
+        name: string,
+        email: string
+    },
+    token?: string,
+    refreshToken?: string,
+    setToken: (token: string) => void,
+    setRefreshToken: (refreshToken: string) => void,
+    setUser: (user: NonNullable<AuthType["user"]>) => void
+}
+
+const AuthReducer = () => {
+    
+}
+
+const AuthContext: Context<AuthType> = createContext();
+
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+    const [auth, setAuth] = useState<AuthType>({
+        setToken(token: string) {
+            // Cookies.set('token', token);
+            setAuth({
+                ...auth,
+                token
+            });
+        },
+        setRefreshToken(refreshToken: string) {
+            setAuth({
+                ...auth,
+                refreshToken
+            });
+        },
+        setUser(user: NonNullable<AuthType['user']>) {
+            setAuth({
+                ...auth,
+                user
+            })
+        }
+    });
+
+    return (
+        <AuthContext.Provider value={auth}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
+
+const useAuth = () => {
+    const context = useContext(AuthContext);
+
+    return context;
+};
+
+export {
+    AuthProvider,
+    useAuth
+}
+---------
+const setToken= (token: AuthType['token']) => {
+        if (token === undefined) {
+            Cookies.remove('token');
+        } else {
+            Cookies.set('token', token);
+        }
+
+        setAuth({
+            ...auth,
+            token
+        });
+    }
+
+    const setRefreshToken= (refreshToken: AuthType['refreshToken']) => {
+        if (refreshToken === undefined) {
+            Cookies.remove('refreshToken');
+        } else {
+            Cookies.set('refreshToken', refreshToken);
+        }
+
+        setAuth({
+            ...auth,
+            refreshToken
+        });
+    }
+
+    const setUser = (user?: NonNullable<AuthType['user']>) => {
+        setAuth({
+            ...auth,
+            user: {
+                name: 'sdfdsf',
+                email: 'dfdf'
+            }
+        });
+    }
+---------
+useEffect(() => {
+        if (firstUpdate.current === false) {
+            if (token === undefined) {
+                Cookies.remove('token');
+            } else {
+                Cookies.set('token', token, {
+                    expires: Date.now() + 
+                });
+            }
+        }
+    }, [token]);
+
+    useEffect(() => {
+        if (firstUpdate.current === false) {
+            if (refreshToken === undefined) {
+                Cookies.remove('refreshToken');
+            } else {
+                Cookies.set('refreshToken', refreshToken);
+            }
+        }
+    }, [refreshToken]);
+
+    useEffect(() => {
+        firstUpdate.current = false;
+    }, []);
+-----
+const value = useMemo(() => token, [token, refreshToken]);
+
+    // console.log(token);
+    useEffect(() => {
+        console.log('change token');
+    }, [token]);
+-------------
+'use client';
+import { useAuth } from "@/context/AuthContext";
+import sendApi from "@/util/send";
+import { useEffect, useMemo, useRef } from "react";
+
+type SendProps = {
+    url: string,
+    args?: RequestInit
+}
+
+function withBaseUrl(string: string) {
+    return `https://nestjs-boilerplate-test.herokuapp.com/api/v1/auth/${string}`;
+}
+
+const useSend = () => {
+    const { token, refreshToken, setUser, setToken, setRefreshToken } = useAuth();
+    const ref = useRef(token);
+
+    const send = <T = any>({ url, args }: SendProps) => {
+        return sendApi<T>({
+            url,
+            args,
+            refreshUrl: withBaseUrl('refresh'),
+            authorization: () => {
+                // console.log('time = ', Date.now());
+                console.log(Date.now(), 'token = ', token);
+                return 'Bearer ' + token;
+            },
+            refreshAuthorization() {
+                return 'Bearer ' + refreshToken;
+            },
+            onRefreshSucess(response) {
+                const data = response.data as any;
+                const newToken = data.token;
+                const newRefreshToken = data.refreshToken;
+
+                console.log('change = ', newToken);
+                setToken(newToken);
+                setRefreshToken(newRefreshToken);
+            },
+        });
+    }
+
+    const login = async ({ email, password }: { email: string, password: string }): Promise<boolean> => {
+        const response = await send({
+            url: withBaseUrl('email/login'),
+            args: {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+            },
+        });
+
+        if (response && response.status === 200) {
+            const data = response.data;
+            const user = data.user;
+            const token = data.token;
+            const refreshToken = data.refreshToken;
+
+            setUser(user);
+            setToken(token);
+            setRefreshToken(refreshToken);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    const logout = async (): Promise<boolean> => {
+        const response = await send({
+            url: withBaseUrl('logout'),
+            args: {
+                method: 'POST',
+            },
+        });
+
+        console.log(response);
+
+        if (response && response.ok) {
+            setUser(undefined);
+            setToken(undefined);
+            setRefreshToken(undefined);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    const profile = async (): Promise<boolean> => {
+        const response = await send({
+            url: withBaseUrl('me')
+        });
+
+        if (response && response.ok) {
+            setUser(response.data);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    return {
+        send,
+        login,
+        logout,
+        profile
+    }
+}
+
+export default useSend;

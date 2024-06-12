@@ -1,31 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import Vars from "@/constant/vars";
 import jwt from 'jsonwebtoken';
-import { Json } from "@/typings";
+import { setTokens } from "@/util/token";
 
 async function POST(req: NextRequest): Promise<NextResponse<boolean>> {
     const { email, password } = await req.json() as Json;
 
     if (email !== undefined && password !== undefined) {
+        const user = {
+            id: 'abc2'
+        }
+
         const accessToken = jwt.sign(
             {
-                email: email
+                id: user.id
             },
-            process.env.Access_Token,
+            process.env.Access_Token!,
             {
                 expiresIn: Vars.Expire.Access_Token
             }
         );
         const refreshToken = jwt.sign(
             {
-                email: email
+                id: user.id
             },
-            process.env.Refresh_Token,
+            process.env.Refresh_Token!,
             {
                 expiresIn: Vars.Expire.Refresh_Token
             }
         );
-        const tokens = [
+        const tokens: Token[] = [
             {
                 name: 'accessToken',
                 value: accessToken,
@@ -39,14 +43,7 @@ async function POST(req: NextRequest): Promise<NextResponse<boolean>> {
         ];
         const response = NextResponse.json(true);
 
-        for (let token of tokens) {
-            response.cookies.set({
-                name: token.name,
-                value: token.value,
-                maxAge: token.maxAge,
-                sameSite: 'strict'
-            })
-        }
+        setTokens(response, tokens);
 
         return response;
     }

@@ -1,7 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
-import { CookiesProvider } from "next-client-cookies/server";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -12,9 +12,9 @@ const RootLayout = ({ children }: Readonly<{children: React.ReactNode}>) => {
     return (
         <html lang="en">
             <body>
-                <CookiesProvider>
+                <AuthProvider>
                     {children}
-                </CookiesProvider>
+                </AuthProvider>
             </body>
         </html>
     );
