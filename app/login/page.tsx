@@ -1,7 +1,6 @@
 'use client';
 import React, { useCallback, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import useSend from '@/hook/useSend';
+import { useAuth } from '@/auth/context/AuthContext';
 
 type InputProps = {
     name: string,
@@ -39,22 +38,22 @@ const Input = ({
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useSend();
-    const router = useRouter();
+    const { login } = useAuth();
 
     const onSubmit = useCallback(async (evt: React.MouseEvent<HTMLButtonElement>) => {
         evt.preventDefault();
 
-        if (email && password) {
-            const result = await login({
-                email,
-                password
-            });
+        const result = await login({
+            email,
+            password
+        });
 
-            if (result) {
-                router.back();
-            } else {
-                alert('invalid incredential');
+        if (result.error === false) {
+            
+        } else {
+            alert('error');
+            if (result.response) {
+                
             }
         }
     }, [email, password]);
