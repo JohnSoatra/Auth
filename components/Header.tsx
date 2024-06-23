@@ -1,12 +1,36 @@
 'use client';
-import Routers from '@/constant/routes';
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
 import React from 'react';
+import Link from 'next/link';
+import Routes from '@/constant/routes';
+import { useAuth } from '@/auth/context/AuthContext';
+import { usePathname, useRouter } from 'next/navigation';
+
+const Buttons: {
+    title: string,
+    link: string
+}[] = [
+    {
+        title: 'Home',
+        link: Routes.Home
+    },
+    {
+        title: 'User',
+        link: Routes.User
+    },
+    {
+        title: 'Admin',
+        link: Routes.Admin
+    },
+    {
+        title: 'Login',
+        link: '/login'
+    },
+];
 
 const Header = () => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const router = useRouter();
+    const pathName = usePathname();
 
     return (
         <div
@@ -21,12 +45,45 @@ const Header = () => {
                 '>
                 <div
                     className='
-                        flex-1 flex justify-end
+                        flex-1 flex gap-x-[20px] px-[10px]
+                    '>
+                    {
+                        Buttons.map((each, index) =>
+                            <Link
+                                key={index}
+                                href={each.link}
+                                className={`
+                                    underline-offset-4
+                                    hover:underline
+                                    ${pathName === each.link && 'underline'}
+                                `}
+                                onClick={() => {
+                                    console.log('click header');
+                                }}>
+                                {each.title}
+                            </Link>
+                        )
+                    }
+                </div>
+                {
+                    user !== undefined &&
+                    <button
+                        className='text-red-600 px-2 py-1'
+                        style={{
+                            border: '1px solid'
+                        }}
+                        onClick={logout}>
+                        Logout
+                    </button>
+                }
+                <div
+                    className='
+                        flex justify-end
                     '>
                     {
                         user === undefined ?
                             <button
-                                onClick={() => router.push(Routers.Login)}>
+                                onClick={() => router.push(Routes.Login(pathName))}>
                                 Login
                             </button> :
                             <p>logined as: {user.firstName}</p>
