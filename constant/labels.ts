@@ -1,7 +1,5 @@
 const Labels = {
-    Access: 'access',
-    Refresh: 'refresh',
-    AccessToken: 'accessToken',
+    Token: 'token',
     RefreshToken: 'refreshToken'
 }
 

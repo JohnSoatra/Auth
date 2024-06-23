@@ -435,3 +435,128 @@ const useSend = () => {
 }
 
 export default useSend;
+-----------------
+if (email && password) {
+            const result = await login({
+                email,
+                password
+            });
+
+            if (result === true) {
+                
+            } else {
+                let error = 'Error:\n';
+
+                if (result === null) {
+                    alert(error + 'something went wrong');
+                } else {
+                    if (result.errors.email !== undefined) {
+                        error += 'email: ' + result.errors.email + '\n';
+                    }
+
+                    if (result.errors.password !== undefined) {
+                        error += 'password: ' + result.errors.password;
+                    }
+
+                    alert(error);
+                }
+            }
+        }
+-----------
+mark + `from=${pathname}`
+-----------
+addStateEvent();
+
+        const states = [
+            'popstate',
+            'pushState',
+            'replaceState'
+        ]
+
+        function stateChange(evt: Event) {
+            evt.preventDefault();
+            console.log(evt.type);
+        }
+
+        if (token !== undefined) {
+            profile().then(() => {
+                setLoaded(true);
+            });
+        } else {
+            setLoaded(true);
+        }
+
+        for (let state of states) {
+            window.addEventListener(state, stateChange);
+        }
+
+        return () => {
+            for (let state of states) {
+                window.removeEventListener(state, stateChange);
+            }
+        }
+----------
+// type AuthMethod = {
+//     setUser: (user: AuthData["user"]) => void,
+//     setToken: (token: AuthData["token"]) => void,
+//     setRefreshToken: (refreshToken: AuthData["refreshToken"]) => void,
+//     setLoggingIn: (loggingIn: AuthAction["loggingIn"]) => void,
+//     setLoggingOut: (loggingOut: AuthAction["loggingOut"]) => void,
+//     setProfiling: (profiling: AuthAction["profiling"]) => void,
+//     setUpdating: (updating: AuthAction["updating"]) => void,
+// }
+--------
+handleAuth({
+            path,
+            route,
+            pathname,
+            loggedIn: user ? true : false,
+            role: user ? user.role.name : undefined,
+            fromLogin: () => {
+                if (route.next !== undefined) {
+                    router.replace(route.next);
+                } else {
+                    const from = searchParam.get('from');
+                    let to: string = from !== null ? from : (route.home || '/');
+
+                    if (to === from) {
+                        router.back();
+                    } else {
+                        router.replace(to);
+                    }
+                }
+            },
+            toLogin: () => {
+                const slice = route.login.split('?');
+
+                router.push(slice[0] + queryString({
+                    search: slice[1],
+                    update: {
+                        'from': pathname
+                    }
+                }));
+            },
+            deny: () => {
+                if (route.denied !== undefined) {
+                    router.replace(route.denied);
+                } else {
+                    router.replace(pathname + queryString({
+                        update: {
+                            'denied': ''
+                        }
+                    }));
+                }
+            }
+        });
+-----------
+deny: ({route}) => {
+                    if (route.denied !== undefined) {
+                        router.replace(route.denied);
+                    } else {
+                        router.replace(pathname + queryString({
+                            update: {
+                                'denied': ''
+                            }
+                        }));
+                    }
+                }
