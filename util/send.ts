@@ -1,4 +1,3 @@
-import Labels from "@/constant/labels";
 import { toResponse } from "@/util/response";
 
 type Props<T=any> = {
@@ -10,10 +9,18 @@ type Props<T=any> = {
     unauthStatusCode?: number,
     auth?: () => string,
     refreshAuth?: () => string,
-    onRefreshSucess?: (response: ResponseSend<T>) => void
+    onRefreshSuccess?: (response: ResponseSend<T>) => void
 }
 
-async function apiSend<T=any>({
+async function tryData<T>(response: Response): Promise<T> {
+    try {
+        return await response.json();
+    } catch {}
+    
+    return null as T;
+}
+
+async function sendApi<T=any>({
     url,
     args,
     refreshUrl,
@@ -22,7 +29,7 @@ async function apiSend<T=any>({
     unauthStatusCode,
     auth,
     refreshAuth,
-    onRefreshSucess
+    onRefreshSuccess
 }: Props<T>):Promise<ResponseSend<T>|null> {
     const _abortController = abortController || new AbortController();
     const _unauthStatusCode = unauthStatusCode || 401;
@@ -31,7 +38,9 @@ async function apiSend<T=any>({
         _abortController.abort();
     }
 
-    window.addEventListener('beforeunload', abort);
+    try {
+        window.addEventListener('beforeunload', abort);
+    } catch{}
 
     try {
         let response = await fetch(url, {
@@ -59,11 +68,11 @@ async function apiSend<T=any>({
             });
 
             if (response.status === 200) {
-                if (onRefreshSucess) {
-                    onRefreshSucess({
+                if (onRefreshSuccess) {
+                    onRefreshSuccess({
                         ...toResponse(response),
-                        for: Labels.Access,
-                        data: await response.json()
+                        for: 'refresh',
+                        data: await tryData<T>(response)
                     });
                 }
 
@@ -78,28 +87,30 @@ async function apiSend<T=any>({
                 
                 return {
                     ...toResponse(response),
-                    for: Labels.Access,
-                    data: await response.json()
+                    for: 'access',
+                    data: await tryData<T>(response)
                 }
             }
 
             return {
                 ...toResponse(response),
-                for: Labels.Access,
-                data: await response.json()
+                for: 'refresh',
+                data: await tryData<T>(response)
             };
         }
 
         return {
             ...toResponse(response),
-            for: Labels.Access,
-            data: await response.json()
+            for: 'access',
+            data: await tryData<T>(response)
         };
     } catch {}
 
-    window.removeEventListener('beforeunload', abort);
+    try {
+        window.removeEventListener('beforeunload', abort);
+    } catch {}
 
     return null;
 }
 
-export default apiSend;
+export default sendApi;
