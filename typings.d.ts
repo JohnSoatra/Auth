@@ -2,27 +2,6 @@ type Json = {
     [key: string]: string | undefined
 }
 
-type ResponseLogin = {
-    accessToken: string,
-    refreshToken: string
-}
-
-type ResponseProduct = {
-    id: string,
-    name: string,
-    price: number
-}
-
-type JwtContent = JwtType & {
-    id: string
-}
-
-type Token = {
-    name: 'refreshToken' | 'accessToken',
-    value: string,
-    maxAge: number
-}
-
 type ResponseObject = {
     body: ReadableStream<Uint8Array> | null;
     bodyUsed: boolean;
@@ -46,13 +25,52 @@ type ResponseSend<T> = Response & {
     data: T
 }
 
-type Cookie = {
-    getAll(): Json;
-    get(name: string, _default?: string): string | undefined;
-    set(name: string, value: string, duration: number, path?: string): void;
+type AuthRole = "User"|"Admin";
+
+type AuthPath = {
+    [key: string]: AuthRole;
 }
 
-type User = {
+type AuthLabel = {
+    token: 'token',
+    refreshToken: 'refreshToken'
+}
+
+type AuthRoute = {
+    login: string,
+    next?: string,
+    denied?: string,
+    home?: string,
+}
+
+type AuthNavProps = {
+    route: AuthRoute,
+    path: AuthPath
+}
+
+type AuthHandleProps = {
+    pathname: string,
+    fromLogin?: (props: AuthNavProps) => void,
+    toLogin?: (props: AuthNavProps) => void,
+    deny?: (props: AuthNavProps) => void,
+    allow?: (props: AuthNavProps) => void,
+}
+
+type AuthLoginProps = {
+    email: string,
+    password: string
+}
+
+type AuthSendProps = {
+    url: string,
+    args?: RequestInit
+}
+
+type AuthUpdateProps = {
+    user: Partial<AuthUser>
+}
+
+type AuthUser = {
     "id": number,
     "email": string,
     "provider": string,
@@ -61,7 +79,7 @@ type User = {
     "lastName": string,
     "role": {
         "id": number,
-        "name": "User"|"Admin",
+        "name": AuthRole,
         "__entity": string
     },
     "status": {
@@ -74,16 +92,51 @@ type User = {
     "deletedAt": string|null
 }
 
-type Auth = AuthData & AuthMethod;
-
-type AuthData = {
-    user?: User,
-    token?: string,
-    refreshToken?: string,
+type AuthProviderProps = {
+    children: React.ReactNode;
+    url: {
+        login: string,
+        logout: string,
+        profile: string,
+        update: string,
+        refresh: string,
+    };
+    expire: {
+        token: number,
+        refreshToken: number
+    };
+    path: AuthPath,
+    route: AuthRoute,
+    label?: AuthLabel
 }
 
-type AuthMethod = {
-    setToken: (token: Date["refreshToken"]) => void,
-    setRefreshToken: (refreshToken: Date["refreshToken"]) => void,
-    setUser: (user: Date["user"]) => void
+type Auth = AuthData & AuthAction & AuthApi;
+
+type AuthData = {
+    user?: AuthUser,
+    token?: string,
+    refreshToken?: string;
+}
+
+type AuthAction = {
+    loggingIn: boolean,
+    loggingOut: boolean,
+    profiling: boolean,
+    updating: boolean
+}
+
+type AuthApi = {
+    login: <T>(props: AuthLoginProps) => Promise<ApiResponse<T>>;
+    logout: <T>() => Promise<ApiResponse<T>>;
+    profile: <T>() => Promise<ApiResponse<T>>;
+    update: <T>(props: AuthUpdateProps) => Promise<ApiResponse<T>>;
+    send: <T>(props: AuthSendProps) => Promise<ResponseSend<T> | null>;
+}
+
+type ApiResponse<T> = {
+    error: false,
+    response: ResponseSend<T>
+} | {
+    error: true,
+    response: ResponseSend<T> | null
 }
