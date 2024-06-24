@@ -18,4 +18,6 @@ function queryString({ search, update }: {search?: string, update?: { [key: stri
         .slice(0, -1);
 }
 
-export default queryString;
+export {
+    queryString
+};

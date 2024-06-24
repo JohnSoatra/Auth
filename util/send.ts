@@ -6,7 +6,7 @@ type Props<T=any> = {
     refreshUrl?: string,
     refreshArgs?: RequestInit,
     abortController?: AbortController,
-    unauthStatusCode?: number,
+    unAuthStatusCode?: number,
     auth?: () => string,
     refreshAuth?: () => string,
     onRefreshSuccess?: (response: ResponseSend<T>) => void
@@ -26,13 +26,13 @@ async function sendApi<T=any>({
     refreshUrl,
     refreshArgs,
     abortController,
-    unauthStatusCode,
+    unAuthStatusCode,
     auth,
     refreshAuth,
     onRefreshSuccess
 }: Props<T>):Promise<ResponseSend<T>|null> {
     const _abortController = abortController || new AbortController();
-    const _unauthStatusCode = unauthStatusCode || 401;
+    const _unAuthStatusCode = unAuthStatusCode || 401;
 
     const abort = () => {
         _abortController.abort();
@@ -53,7 +53,7 @@ async function sendApi<T=any>({
         });
 
         if (
-            response.status === _unauthStatusCode &&
+            response.status === _unAuthStatusCode &&
             refreshUrl &&
             url !== refreshUrl
         ) {
