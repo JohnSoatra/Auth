@@ -1,5 +1,5 @@
 const Routes = {
-    Login: (from: string) => `/login?from=${from}`,
+    Login: '/login',
     Admin: '/admin',
     User: '/user',
     Denied: '/403',

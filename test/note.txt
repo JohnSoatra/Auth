@@ -560,3 +560,24 @@ deny: ({route}) => {
                         }));
                     }
                 }
+----------------------
+let _token = token;
+        let _refreshToken = refreshToken;
+
+        return sendApi<T>({
+            url: _url,
+            args,
+            refreshUrl: url.refresh,
+            auth: () => 'Bearer ' + (refToken.current.token || ''),
+            refreshAuth: () => 'Bearer ' + (refToken.current.refreshToken || ''),
+            onRefreshSuccess(response) {
+                const data = response.data as any;
+                const newToken = data.token;
+                const newRefreshToken = data.refreshToken;
+
+                _token = newToken;
+                _refreshToken = newRefreshToken;
+                setToken(newToken);
+                setRefreshToken(newRefreshToken);
+            }
+        });
