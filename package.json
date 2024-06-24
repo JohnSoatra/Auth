@@ -59,6 +59,7 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.1",
     "rollup-plugin-typescript-paths": "^1.5.0",
+    "rollup-preserve-directives": "^1.1.1",
     "tailwindcss": "^3.4.1",
     "tslib": "^2.6.2",
     "typescript": "^5"

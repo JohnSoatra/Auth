@@ -27,7 +27,7 @@ const options = defineConfig([
                 format: "esm",
             },
         ],
-        plugins: [
+        plugins: [  
             typescript({
                 tsconfig: './tsconfig.json'
             }),
