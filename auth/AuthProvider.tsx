@@ -10,23 +10,23 @@ const AuthProvider = async ({ ...props }: AuthProviderProps) => {
     let refreshToken = cookieStore.get(props.label?.refreshToken || Labels.RefreshToken)?.value;
     let user: AuthUser | undefined = undefined;
 
-    // if (!(token === undefined && refreshToken === undefined)) {
-    //     const response = await sendApi<AuthUser>({
-    //         url: props.url.profile,
-    //         refreshUrl: props.url.refresh,
-    //         auth: () => 'Bearer ' + token,
-    //         refreshAuth: () => 'Bearer ' + refreshToken,
-    //         onRefreshSuccess(response) {
-    //             const data = response.data as any;
-    //             token = data.token;
-    //             refreshToken = data.refreshToken;
-    //         }
-    //     });
+    if (!(token === undefined && refreshToken === undefined)) {
+        const response = await sendApi<AuthUser>({
+            url: props.url.profile,
+            refreshUrl: props.url.refresh,
+            auth: () => 'Bearer ' + token,
+            refreshAuth: () => 'Bearer ' + refreshToken,
+            onRefreshSuccess(response) {
+                const data = response.data as any;
+                token = data.token;
+                refreshToken = data.refreshToken;
+            }
+        });
 
-    //     if (response && response.ok) {
-    //         user = response.data;
-    //     }
-    // }
+        if (response !== null && response.ok) {
+            user = response.data;
+        }
+    }
 
     return (
         <_AuthProvider

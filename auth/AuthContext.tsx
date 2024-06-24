@@ -1,10 +1,10 @@
 'use client';
-import { Context, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { Context, createContext, useCallback, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { queryString } from "@/util/query";
+import { onlyPathname } from "@/util/url";
 import Cookies from 'js-cookie';
 import sendApi from "@/util/send";
-import queryString from "@/util/query";
-import { onlyPathname } from "@/util/url";
 import Labels from "@/constant/labels";
 
 const InitialAuth: Auth = {
@@ -70,7 +70,19 @@ const _AuthProvider = ({
         }
     }, []);
 
-    const handle = useCallback(({ pathname, fromLogin, toLogin, deny, allow }: AuthHandleProps) => {
+    const handle = useCallback(({
+        pathname,
+        fromLogin,
+        toLogin,
+        deny,
+        allow
+    }: {
+        pathname: string,
+        fromLogin?: (props: AuthNavProps) => void,
+        toLogin?: (props: AuthNavProps) => void,
+        deny?: (props: AuthNavProps) => void,
+        allow?: (props: AuthNavProps) => void,
+    }) => {
         if (onlyPathname(pathname) === onlyPathname(route.login)) {
             if (user !== undefined) {
                 fromLogin && fromLogin({ route, path });
@@ -104,7 +116,7 @@ const _AuthProvider = ({
         }
     }, [user]);
 
-    const send: AuthApi['send'] = useCallback(<T = any>({ url: _url, args }: AuthSendProps) => {
+    const send: AuthApi['send'] = useCallback(async <T = any>({ url: _url, args }: AuthSendProps) => {
         let _token = token;
         let _refreshToken = refreshToken;
 
@@ -298,6 +310,12 @@ const _AuthProvider = ({
     }, [pathname, user]);
 
     useEffect(() => {
+        if (toPathname === pathname) {
+            setLoaded(true);
+        }
+    }, [pathname, toPathname]);
+
+    useEffect(() => {
         const onClick = (evt: MouseEvent) => {
             let target = evt.target as HTMLAnchorElement;
 
@@ -348,15 +366,7 @@ const _AuthProvider = ({
                 expires: expire.refreshToken
             });
         }
-    }, []);
 
-    useMemo(() => {
-        if (toPathname === pathname) {
-            setLoaded(true);
-        }
-    }, [pathname, toPathname]);
-
-    useMemo(() => {
         let to: string | undefined = undefined;
 
         handle({
