@@ -1,11 +1,12 @@
 'use client';
 import { Context, createContext, useCallback, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { queryString } from "../util/query";
-import { onlyPathname } from "../util/url";
-import sendApi from "../util/send";
-import Labels from "../constant/labels";
+import { queryString } from "./util/query";
+import { onlyPathname } from "./util/url";
+import sendApi from "./util/send";
+import Labels from "./labels";
 import Cookies from 'js-cookie';
+import { Auth, AuthAction, AuthApi, AuthData, AuthLoginProps, AuthNavProps, AuthProviderProps, AuthSendProps } from "./types";
 
 const InitialAuth: Auth = {
     token: Cookies.get(Labels.Token),
@@ -45,8 +46,14 @@ const _AuthProvider = ({
     const [loaded, setLoaded] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
+    const tokenRef = {
+        token,
+        refreshToken
+    }
 
     const setToken = useCallback((token: AuthData['token']) => {
+        tokenRef.token = token;
+        
         _setToken(token);
 
         if (token === undefined) {
@@ -59,6 +66,8 @@ const _AuthProvider = ({
     }, []);
 
     const setRefreshToken = useCallback((refreshToken: AuthData['refreshToken']) => {
+        tokenRef.refreshToken = refreshToken;
+
         _setRefreshToken(refreshToken);
 
         if (refreshToken === undefined) {
@@ -117,25 +126,22 @@ const _AuthProvider = ({
     }, [user]);
 
     const send: AuthApi['send'] = useCallback(async <T = any>({ url: _url, args }: AuthSendProps) => {
-        let _token = token;
-        let _refreshToken = refreshToken;
-
         return sendApi<T>({
             url: _url,
             args,
             refreshUrl: url.refresh,
-            auth: () => 'Bearer ' + (_token || ''),
-            refreshAuth: () => 'Bearer ' + (_refreshToken || ''),
+            auth: () => 'Bearer ' + (tokenRef.token || ''),
+            refreshAuth: () => 'Bearer ' + (tokenRef.refreshToken || ''),
             onRefreshSuccess(response) {
                 const data = response.data as any;
-                _token = data.token;
-                _refreshToken = data.refreshToken;
+                tokenRef.token = data.token;
+                tokenRef.refreshToken = data.refreshToken;
 
-                setToken(_token);
-                setRefreshToken(_refreshToken);
+                setToken(tokenRef.token);
+                setRefreshToken(tokenRef.refreshToken);
             }
         });
-    }, [token, refreshToken]);
+    }, []);
 
     const login: AuthApi['login'] = useCallback(async <T = any>({ email, password }: AuthLoginProps) => {
         setLoggingIn(true);

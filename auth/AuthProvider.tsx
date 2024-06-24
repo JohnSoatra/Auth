@@ -1,8 +1,9 @@
 import React from 'react';
-import sendApi from '../util/send';
-import Labels from '../constant/labels';
+import sendApi from './util/send';
+import Labels from './labels';
 import { cookies } from 'next/headers';
 import { _AuthProvider } from './AuthContext';
+import { AuthProviderProps, AuthUser } from './types';
 
 const AuthProvider = async ({ ...props }: AuthProviderProps) => {
     const cookieStore = cookies();
