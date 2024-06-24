@@ -48,14 +48,6 @@ type AuthNavProps = {
     path: AuthPath
 }
 
-type AuthHandleProps = {
-    pathname: string,
-    fromLogin?: (props: AuthNavProps) => void,
-    toLogin?: (props: AuthNavProps) => void,
-    deny?: (props: AuthNavProps) => void,
-    allow?: (props: AuthNavProps) => void,
-}
-
 type AuthLoginProps = {
     email: string,
     password: string
