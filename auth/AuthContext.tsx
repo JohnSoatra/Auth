@@ -1,11 +1,11 @@
 'use client';
 import { Context, createContext, useCallback, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { queryString } from "@/util/query";
-import { onlyPathname } from "@/util/url";
+import { queryString } from "../util/query";
+import { onlyPathname } from "../util/url";
+import sendApi from "../util/send";
+import Labels from "../constant/labels";
 import Cookies from 'js-cookie';
-import sendApi from "@/util/send";
-import Labels from "@/constant/labels";
 
 const InitialAuth: Auth = {
     token: Cookies.get(Labels.Token),

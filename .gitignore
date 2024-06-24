@@ -16,6 +16,9 @@
 
 # production
 /build
+/dist
+/.rollup.cache
+/.tsbuildinfo
 
 # misc
 .DS_Store
@@ -35,3 +38,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# hidden
+.env
+.DS_Store

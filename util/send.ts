@@ -1,4 +1,4 @@
-import { toResponse } from "@/util/response";
+import { toResponse } from "./response";
 
 type Props<T=any> = {
     url: string,

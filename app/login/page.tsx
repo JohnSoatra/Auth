@@ -1,6 +1,6 @@
 'use client';
 import React, { useCallback, useState } from 'react';
-import { useAuth } from '@/auth/AuthContext';
+import { useAuth } from '../../auth/AuthContext';
 
 type InputProps = {
     name: string,

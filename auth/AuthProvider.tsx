@@ -1,6 +1,6 @@
 import React from 'react';
-import sendApi from '@/util/send';
-import Labels from '@/constant/labels';
+import sendApi from '../util/send';
+import Labels from '../constant/labels';
 import { cookies } from 'next/headers';
 import { _AuthProvider } from './AuthContext';
 

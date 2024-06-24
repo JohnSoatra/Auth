@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import Routes from '@/constant/routes';
-import { useAuth } from '@/auth/AuthContext';
-import { usePathname, useRouter } from 'next/navigation';
+import Routes from '../constant/routes';
+import { useAuth } from '../auth/AuthContext';
+import { usePathname } from 'next/navigation';
 
 const Buttons: {
     title: string,

@@ -1,31 +1,78 @@
 {
-  "name": "dfl-learn",
+  "name": "auth",
   "version": "0.1.0",
-  "private": true,
+  "description": "React Component for authentication.",
+  "repository": {
+    "url": "https://github.com/johnsoatra/auth"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "rollbuild": "rollup -c rollup.config.ts",
+    "rebuild": "rm -rf dist && rollup -c rollup.config.ts",
+    "deploy": "rm -rf dist && NODE_ENV=production npm run build && npm publish"
   },
+  "keywords": [
+    "authentication",
+    "react"
+  ],
+  "author": "Soatra",
+  "license": "MIT",
   "dependencies": {
-    "js-cookie": "^3.0.5",
-    "jsonwebtoken": "^9.0.2",
-    "next": "14.2.3",
-    "next-client-cookies": "^1.1.1",
+    "js-cookie": "^3.0.5"
+  },
+  "peerDependencies": {
+    "next": "^14",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "@rollup/plugin-alias": "^5.1.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^8.3.0",
     "@types/js-cookie": "^3.0.6",
-    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/rollup-plugin-peer-deps-external": "^2.2.5",
+    "autoprefixer": "^10.4.19",
+    "babel-jest": "^27.3.1",
+    "babel-loader": "^8.2.3",
+    "dotenv": "^16.4.5",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",
+    "rollup": "^2.60.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-dts": "^4.0.1",
+    "rollup-plugin-import-css": "^3.5.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.1",
+    "rollup-plugin-typescript-paths": "^1.5.0",
     "tailwindcss": "^3.4.1",
+    "tslib": "^2.6.2",
     "typescript": "^5"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ],
+  "exports": {
+    "./provider": "./dist/provider.js",
+    "./provider.mjs": "./dist/provider.mjs",
+    "./context": "./dist/context.js",
+    "./context.mjs": "./dist/context.mjs"
   }
 }

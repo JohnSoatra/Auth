@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect } from "react";
-import Layout from "@/components/Layout";
+import Layout from "../../components/Layout";
 
 const Admin = () => {
     useEffect(() => {
