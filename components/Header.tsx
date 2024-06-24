@@ -29,7 +29,6 @@ const Buttons: {
 
 const Header = () => {
     const { user, logout } = useAuth();
-    const router = useRouter();
     const pathName = usePathname();
 
     return (
@@ -56,10 +55,7 @@ const Header = () => {
                                     underline-offset-4
                                     hover:underline
                                     ${pathName === each.link && 'underline'}
-                                `}
-                                onClick={() => {
-                                    console.log('click header');
-                                }}>
+                                `}>
                                 {each.title}
                             </Link>
                         )
@@ -82,10 +78,10 @@ const Header = () => {
                     '>
                     {
                         user === undefined ?
-                            <button
-                                onClick={() => router.push(Routes.Login(pathName))}>
+                            <Link
+                                href={Routes.Login}>
                                 Login
-                            </button> :
+                            </Link> :
                             <p>logined as: {user.firstName}</p>
                     }
                 </div>
