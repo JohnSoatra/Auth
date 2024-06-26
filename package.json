@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "React Component for authentication.",
   "private": false,
-
   "repository": {
     "url": "https://github.com/johnsoatra/auth"
   },
