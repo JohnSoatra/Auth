@@ -1,5 +1,5 @@
 'use client';
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "../components/Layout";
 
 const Home = () => {
@@ -11,6 +11,7 @@ const Home = () => {
                 target="_blank">
                 link
             </a>
+            {/* <Button /> */}
         </Layout>
     );
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
-import AuthProvider from "../auth/AuthProvider";
+import { AuthProvider } from '@/dist';
 
 export const metadata: Metadata = {
     title: "Auth",

@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Routes from '../routes';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '../lib/AuthContext';
 import { usePathname } from 'next/navigation';
 
 const Buttons: {
