@@ -1,6 +1,6 @@
 {
   "name": "@soatra/auth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React Component for authentication.",
   "repository": {
     "url": "https://github.com/johnsoatra/auth"
