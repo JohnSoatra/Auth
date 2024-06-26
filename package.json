@@ -1,6 +1,6 @@
 {
-  "name": "auth",
-  "version": "0.1.0",
+  "name": "@soatra/auth",
+  "version": "1.0.0",
   "description": "React Component for authentication.",
   "repository": {
     "url": "https://github.com/johnsoatra/auth"
@@ -10,9 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "rollbuild": "rollup -c rollup.config.ts",
-    "rebuild": "rm -rf dist && rollup -c rollup.config.ts",
-    "deploy": "rm -rf dist && NODE_ENV=production npm run build && npm publish"
+    "lib-build": "rm -rf dist && tsc --p ./tsconfig-build.json && vite build",
+    "lib-deploy": "rm -rf dist && tsc --p ./tsconfig-build.json && MODE=production vite build"
   },
   "keywords": [
     "authentication",
@@ -21,59 +20,40 @@
   "author": "Soatra",
   "license": "MIT",
   "dependencies": {
-    "js-cookie": "^3.0.5"
+    "js-cookie": "^3.0.5",
+    "next": "14.2.3",
+    "react": "^18",
+    "react-dom": "^18"
   },
   "peerDependencies": {
-    "next": "^14",
+    "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@babel/preset-env": "^7.16.4",
-    "@babel/preset-react": "^7.16.0",
-    "@babel/preset-typescript": "^7.16.0",
-    "@rollup/plugin-alias": "^5.1.0",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^21.0.1",
-    "@rollup/plugin-node-resolve": "^13.0.6",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^8.3.0",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@types/rollup-plugin-peer-deps-external": "^2.2.5",
-    "autoprefixer": "^10.4.19",
-    "babel-jest": "^27.3.1",
-    "babel-loader": "^8.2.3",
+    "@vitejs/plugin-react-swc": "^3.7.0",
     "dotenv": "^16.4.5",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",
-    "rollup": "^2.60.0",
-    "rollup-plugin-delete": "^2.0.0",
-    "rollup-plugin-dts": "^4.0.1",
-    "rollup-plugin-import-css": "^3.5.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-postcss": "^4.0.1",
-    "rollup-plugin-typescript-paths": "^1.5.0",
-    "rollup-preserve-directives": "^1.1.1",
+    "rollup-plugin-preserve-directives": "^0.4.0",
     "tailwindcss": "^3.4.1",
-    "tslib": "^2.6.2",
-    "typescript": "^5"
+    "terser": "^5.31.1",
+    "typescript": "^5",
+    "vite": "^5.3.1",
+    "vite-plugin-dts": "^3.9.1"
   },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "README.md",
     "LICENSE",
     "package.json"
-  ],
-  "exports": {
-    "./provider": "./dist/provider.js",
-    "./provider.mjs": "./dist/provider.mjs",
-    "./context": "./dist/context.js",
-    "./context.mjs": "./dist/context.mjs"
-  }
+  ]
 }

@@ -16,9 +16,9 @@
 
 # production
 /build
-/dist
 /.rollup.cache
 /.tsbuildinfo
+/dist
 
 # misc
 .DS_Store
