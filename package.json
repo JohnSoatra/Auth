@@ -2,7 +2,6 @@
   "name": "@soatra/auth",
   "version": "1.0.0",
   "description": "React Component for authentication.",
-  "private": false,
   "repository": {
     "url": "https://github.com/johnsoatra/auth"
   },
@@ -12,7 +11,8 @@
     "start": "next start",
     "lint": "next lint",
     "lib-build": "rm -rf dist && tsc --p ./tsconfig-build.json && vite build",
-    "lib-deploy": "rm -rf dist && tsc --p ./tsconfig-build.json && MODE=production vite build && npm publish"
+    "lib-pro": "rm -rf dist && tsc --p ./tsconfig-build.json && MODE=production vite build",
+    "deploy": "rm -rf dist && tsc --p ./tsconfig-build.json && MODE=production vite build && npm publish --access public"
   },
   "keywords": [
     "authentication",

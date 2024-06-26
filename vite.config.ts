@@ -26,7 +26,12 @@ function minifyBundles(run?: boolean) {
             for (const key in bundle) {
                 if (bundle[key].type == 'chunk' && key.endsWith('.js')) {
                     const minifyCode = await minify(
-                        bundle[key].code
+                        bundle[key].code,
+                        {
+                            compress: {
+                                directives: false
+                            }
+                        }
                     );
                     bundle[key].code = minifyCode.code;
                 }
@@ -46,7 +51,7 @@ export default defineConfig({
         dts({
             include: [RootDir]
         }),
-        minifyBundles(!developMode)
+        minifyBundles(!developMode),
     ],
     build: {
         lib: {
